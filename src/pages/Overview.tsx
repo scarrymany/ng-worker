@@ -99,7 +99,7 @@ export function Overview() {
               return (
                 <div key={s.itemId} className="list-row" onClick={() => go({ name: 'item', id: s.itemId })}>
                   <span className="rank">{i + 1}</span>
-                  <div className="row-thumb"><Thumb entry={e} /></div>
+                  <div className="row-thumb"><Thumb entry={e} w={160} /></div>
                   <div className="grow">
                     <b>{e?.name || s.name}</b>
                     <div className="bar"><motion.i initial={{ width: 0 }} animate={{ width: `${Math.max(4, (Math.abs(s.realized) / maxTop) * 100)}%` }} transition={{ delay: 0.3 + i * 0.06, duration: 0.8, ease: [0.22, 1, 0.36, 1] }} style={s.realized < 0 ? { background: 'var(--red)' } : undefined} /></div>
@@ -121,7 +121,7 @@ export function Overview() {
             const p = ledger.dealProfit.get(d.id);
             return (
               <div key={d.id} className="list-row" onClick={() => go({ name: 'item', id: d.itemId })}>
-                <div className="row-thumb"><Thumb entry={e} /></div>
+                <div className="row-thumb"><Thumb entry={e} w={160} /></div>
                 <div className="grow">
                   <b>{e?.name || d.name}</b>
                   <small>{d.type === 'buy' ? 'Купівля' : 'Продаж'} · {d.qty} шт. × {money(d.price)} · {ago(d.ts)}</small>

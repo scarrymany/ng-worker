@@ -1,7 +1,7 @@
 import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown, Heart, X, Check, AlertTriangle, type LucideIcon } from 'lucide-react';
-import { actions, useStore } from '../lib/store';
+import { actions, isTauri, useStore } from '../lib/store';
 import type { Entry } from '../lib/catalog';
 import { money } from '../lib/format';
 
@@ -130,16 +130,22 @@ export function CountUp({ value, format = money, className }: { value: number; f
 }
 
 // ---------- images ----------
-export function Thumb({ entry, src, cover }: { entry?: Entry | null; src?: string | null; cover?: boolean }) {
-  // Try the given/CDN image first, then the bundled fallback, then the showroom photo.
-  const chain = (src !== undefined && src !== null ? [src] : entry ? [entry.img, entry.fallback, entry.photo] : []).filter(Boolean) as string[];
+/** In the desktop app, remote images go through the Rust `thumb://` cache that shrinks them to `w` px. */
+export function thumbSrc(url: string, w: number): string {
+  return isTauri && url.startsWith('https://cdn.ng-gta5.com/') ? `http://thumb.localhost/${w}/${encodeURIComponent(url)}` : url;
+}
+const withThumbs = (urls: string[], w: number) => urls.flatMap((u) => (thumbSrc(u, w) !== u ? [thumbSrc(u, w), u] : [u]));
+
+export function Thumb({ entry, src, cover, w = 360 }: { entry?: Entry | null; src?: string | null; cover?: boolean; w?: number }) {
+  // Try the given/CDN image first (as a cached thumbnail, then raw), then the bundled fallback, then the photo.
+  const chain = withThumbs((src !== undefined && src !== null ? [src] : entry ? [entry.img, entry.fallback, entry.photo] : []).filter(Boolean) as string[], w);
   const [idx, setIdx] = useState(0);
   const chainKey = chain.join('|');
   useEffect(() => setIdx(0), [chainKey]);
   const bad = idx >= chain.length;
   const setBad = () => setIdx((i) => i + 1);
   const s = chain[idx] || null;
-  const isPhoto = !!entry && !entry.img && !!entry.photo && s === entry.photo;
+  const isPhoto = !!entry && !entry.img && !!entry.photo && !!s && (s === entry.photo || s === thumbSrc(entry.photo, w));
   const isCrop = !!s && s.includes('catalog/vehicles/');
   const isCloth = !!s && s.includes('catalog/clothes/');
   if (isCloth && !bad) return <img key={s} src={s!} alt="" loading="lazy" decoding="async" className="cover cloth" onError={setBad} draggable={false} />;
@@ -148,18 +154,17 @@ export function Thumb({ entry, src, cover }: { entry?: Entry | null; src?: strin
 }
 
 export function HeartBtn({ id, className = '' }: { id: string; className?: string }) {
+  // Plain button + CSS keyframe: hundreds of these render at once, so no framer-motion here.
   const on = useStore((s) => s.favs.includes(id));
+  const [popped, setPopped] = useState(false);
   return (
-    <motion.button
-      className={'heart ' + (on ? 'on ' : '') + className}
-      whileTap={{ scale: 0.8 }}
-      onClick={(e) => { e.stopPropagation(); actions.toggleFav(id); }}
+    <button
+      className={'heart ' + (on ? 'on ' : '') + (popped ? 'pop ' : '') + className}
+      onClick={(e) => { e.stopPropagation(); setPopped(true); actions.toggleFav(id); }}
       title={on ? 'Прибрати з обраного' : 'В обране'}
     >
-      <motion.span key={String(on)} initial={{ scale: on ? 0.4 : 1 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 600, damping: 15 }} style={{ display: 'grid' }}>
-        <Heart />
-      </motion.span>
-    </motion.button>
+      <Heart />
+    </button>
   );
 }
 

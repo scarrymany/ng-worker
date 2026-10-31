@@ -24,7 +24,7 @@ export const EntryCard = memo(function EntryCard({ e, s, i, onOpen }: { e: Entry
   const held = s?.held || 0;
   const avg = held > 0 ? s!.heldCost / held : 0;
   return (
-    <div className="card" style={{ animationDelay: `${Math.min(i, 24) * 22}ms` }} onClick={() => onOpen(e.id)}>
+    <div className={'card' + (i < 20 ? ' enter' : '')} style={i < 20 ? { animationDelay: `${i * 22}ms` } : undefined} onClick={() => onOpen(e.id)}>
       <div className="well">
         <Thumb entry={e} />
         <HeartBtn id={e.id} />

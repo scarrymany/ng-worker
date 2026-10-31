@@ -1,3 +1,5 @@
+mod thumbs;
+
 use std::fs;
 use std::path::PathBuf;
 use tauri::{AppHandle, Manager};
@@ -123,6 +125,17 @@ fn data_location(app: AppHandle) -> Result<String, String> {
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
+        .register_asynchronous_uri_scheme_protocol("thumb", |ctx, request, responder| {
+            let cache = ctx
+                .app_handle()
+                .path()
+                .app_cache_dir()
+                .unwrap_or_else(|_| std::env::temp_dir())
+                .join("thumbs");
+            let path = request.uri().path().to_string();
+            // Work off the UI thread: downloads and resizing can take a moment.
+            std::thread::spawn(move || responder.respond(thumbs::handle(cache, &path)));
+        })
         .invoke_handler(tauri::generate_handler![
             load_data,
             save_data,

@@ -82,7 +82,7 @@ export function SettingsPage() {
             </div>
           </div>
         </div>
-        <p className="kbd-hint" style={{ marginTop: 24 }}>NG Worker v1.0.0 · фанатський інструмент, не пов'язаний з адміністрацією NG. Фото предметів — з вікі NG, авто та одяг — з NG Base.</p>
+        <p className="kbd-hint" style={{ marginTop: 24 }}>NG Worker v1.0.1 · фанатський інструмент, не пов'язаний з адміністрацією NG. Фото предметів — з вікі NG, авто та одяг — з NG Base.</p>
       </div>
 
       <Modal open={!!pending} onClose={() => setPending(null)} size="sm">

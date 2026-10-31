@@ -5,7 +5,7 @@ import { Top, useApp } from '../app';
 import { heroOf, sectionByKey, type Entry } from '../lib/catalog';
 import { actions, useStore } from '../lib/store';
 import { money, parseAmount, plural, signedMoney, uid, dateLong } from '../lib/format';
-import { AreaChart, Empty, HeartBtn, Stepper, Tabs, Thumb, toast } from '../components/ui';
+import { AreaChart, Empty, HeartBtn, Stepper, Tabs, Thumb, thumbSrc, toast } from '../components/ui';
 import { DealsTable } from './Deals';
 import { subtitle } from '../components/EntryCard';
 
@@ -87,7 +87,7 @@ export function ItemPage({ id }: { id: string }) {
                 <AnimatePresence mode="wait">
                   <motion.div key={img || 'base'} initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}
                     style={{ width: '100%', height: '100%', display: 'grid', placeItems: 'center' }}>
-                    <Thumb entry={e} src={img} cover={!e.img && !!e.photo} />
+                    <Thumb entry={e} w={560} src={img} cover={!e.img && !!e.photo} />
                   </motion.div>
                 </AnimatePresence>
               </div>
@@ -114,7 +114,7 @@ export function ItemPage({ id }: { id: string }) {
                 {e.variants.map((v, k) => (
                   <motion.button key={v} className={'variant' + (variant === k ? ' on' : '')} onClick={() => setVariant(variant === k ? undefined : k)}
                     initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: k * 0.02 }}>
-                    <img src={v} alt="" loading="lazy" /><em>{k + 1}</em>
+                    <img src={thumbSrc(v, 160)} alt="" loading="lazy" decoding="async" onError={(ev) => { if (ev.currentTarget.src !== v) ev.currentTarget.src = v; }} /><em>{k + 1}</em>
                   </motion.button>
                 ))}
               </div>

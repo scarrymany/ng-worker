@@ -5,7 +5,7 @@ import { useApp, type DealPreset } from '../app';
 import { SECTIONS, type Entry } from '../lib/catalog';
 import { actions, useStore, type DealType } from '../lib/store';
 import { money, parseAmount, signedMoney, uid, plural } from '../lib/format';
-import { Modal, ModalHead, Seg, Stepper, Thumb, toast } from './ui';
+import { Modal, ModalHead, Seg, Stepper, Thumb, thumbSrc, toast } from './ui';
 import { subtitle } from './EntryCard';
 
 const toLocal = (ts: number) => {
@@ -105,7 +105,7 @@ export function DealModal({ open, preset, onClose }: { open: boolean; preset?: D
               {results.map((e, i) => (
                 <motion.button key={e.id} className="pick" onClick={() => setEntry(e)}
                   initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(i, 18) * 0.012 }}>
-                  <div className="row-thumb"><Thumb entry={e} /></div>
+                  <div className="row-thumb"><Thumb entry={e} w={160} /></div>
                   <div>
                     <b>{e.name}</b>
                     <small>{ledger.items.get(e.id)?.held ? `${ledger.items.get(e.id)!.held} шт. на складі` : subtitle(e)}</small>
@@ -118,7 +118,7 @@ export function DealModal({ open, preset, onClose }: { open: boolean; preset?: D
         ) : (
           <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>
             <div className="chosen">
-              <div className="row-thumb"><Thumb entry={entry} src={variant !== undefined && entry.variants ? entry.variants[variant] : undefined} /></div>
+              <div className="row-thumb"><Thumb w={160} entry={entry} src={variant !== undefined && entry.variants ? entry.variants[variant] : undefined} /></div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <b>{entry.name}</b>
                 <small>{st?.held ? `На складі ${st.held} шт. · сер. ${money(avgCost)}` : subtitle(entry)}</small>
@@ -129,7 +129,7 @@ export function DealModal({ open, preset, onClose }: { open: boolean; preset?: D
               <div className="variants">
                 {entry.variants.map((v, k) => (
                   <button key={v} className={'variant' + (variant === k ? ' on' : '')} onClick={() => setVariant(variant === k ? undefined : k)}>
-                    <img src={v} alt="" loading="lazy" /><em>{k + 1}</em>
+                    <img src={thumbSrc(v, 160)} alt="" loading="lazy" decoding="async" onError={(ev) => { if (ev.currentTarget.src !== v) ev.currentTarget.src = v; }} /><em>{k + 1}</em>
                   </button>
                 ))}
               </div>

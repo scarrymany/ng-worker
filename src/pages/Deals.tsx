@@ -14,6 +14,7 @@ export function DealsTable({ deals, showItem = true, limit }: { deals: Deal[]; s
   const { byId, ledger, go, openDeal } = useApp();
   const rows = limit ? deals.slice(0, limit) : deals;
   return (
+    <div className="table-scroll">
     <table className="table">
       <thead>
         <tr>
@@ -39,7 +40,7 @@ export function DealsTable({ deals, showItem = true, limit }: { deals: Deal[]; s
               {showItem && (
                 <td>
                   <div className="row-item">
-                    <div className="row-thumb"><Thumb entry={e} src={d.variant !== undefined && e?.variants ? e.variants[d.variant] : undefined} /></div>
+                    <div className="row-thumb"><Thumb w={160} entry={e} src={d.variant !== undefined && e?.variants ? e.variants[d.variant] : undefined} /></div>
                     <div style={{ minWidth: 0 }}>
                       <b style={{ display: 'block' }}>{e?.name || d.name}</b>
                       {d.note && <span className="muted" style={{ fontSize: 12 }}>{d.note}</span>}
@@ -68,6 +69,7 @@ export function DealsTable({ deals, showItem = true, limit }: { deals: Deal[]; s
         })}
       </tbody>
     </table>
+    </div>
   );
 }
 

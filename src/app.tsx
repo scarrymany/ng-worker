@@ -196,7 +196,7 @@ export function Top({ title, sub, children, back }: { title: ReactNode; sub?: Re
         <b className={t.realized < 0 ? 'neg' : ''}><TrendingUp /><CountUp value={t.realized} /></b>
         <span><Wallet /><CountUp value={t.revenue} /></span>
       </div>
-      <button className="btn btn-outline" onClick={() => openDeal()}><Plus /> Додати угоду</button>
+      <button className="btn btn-outline" title="Додати угоду (Ctrl+N)" onClick={() => openDeal()}><Plus /><span className="btn-text">Додати угоду</span></button>
       <button className="round" onClick={() => go({ name: 'settings' })} title="Налаштування">{(nick || 'NG').slice(0, 2).toUpperCase()}</button>
       {isTauri && (
         <div className="winctl">
