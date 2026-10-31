@@ -24,8 +24,8 @@
 
 Завантажте з [Releases](https://github.com/scarrymany/ng-worker/releases/latest):
 
-- `NG.Worker_x.x.x_x64-setup.exe` — інсталятор (рекомендовано);
-- `NG-Worker-portable.exe` — одним файлом, без встановлення.
+- `NG-Worker-1.0.0-Setup.exe` — інсталятор (рекомендовано);
+- `NG-Worker-1.0.0-Portable.exe` — одним файлом, без встановлення.
 
 Потрібен Windows 10/11 з WebView2 (у Windows 11 вже є).
 
